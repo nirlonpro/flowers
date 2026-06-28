@@ -9,7 +9,6 @@ export const login = async (req, res) => {
   try {
     const { password } = req.body;
 
-    // Check if password is provided
     if (!password) {
       return res.status(400).json({
         success: false,
@@ -67,7 +66,10 @@ export const login = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite:
+        process.env.NODE_ENV === "production"
+          ? "none"
+          : "lax",
       maxAge: 24 * 60 * 60 * 1000,
     });
 
@@ -91,7 +93,14 @@ export const login = async (req, res) => {
 ========================================== */
 
 export const logout = (req, res) => {
-  res.clearCookie("token");
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite:
+      process.env.NODE_ENV === "production"
+        ? "none"
+        : "lax",
+  });
 
   return res.status(200).json({
     success: true,

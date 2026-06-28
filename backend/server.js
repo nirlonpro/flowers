@@ -24,6 +24,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
+      "https://flowers-frontend-bg3u.vercel.app",
     ],
     credentials: true,
   })
