@@ -50,6 +50,7 @@ export default function Login() {
         <input
           type={showPassword ? "text" : "password"}
           placeholder="Password"
+          aria-label="Password"
           value={password}
           onChange={(e) =>
             setPassword(e.target.value)
@@ -58,6 +59,7 @@ export default function Login() {
         />
 
         <button
+          type="button"
           className="showBtn"
           onClick={() =>
             setShowPassword(!showPassword)
@@ -69,6 +71,7 @@ export default function Login() {
         </button>
 
         <button
+          type="button"
           className="loginBtn"
           onClick={handleLogin}
           disabled={loading}

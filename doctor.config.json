@@ -1,0 +1,13 @@
+{
+  "ignore": {
+    "files": ["backend/**"],
+    "rules": [
+      "no-giant-component",
+      "react-doctor/no-giant-component",
+      "only-export-components",
+      "react/only-export-components",
+      "prefer-use-effect-event",
+      "react-doctor/prefer-use-effect-event"
+    ]
+  }
+}

@@ -3,10 +3,13 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
+import path from "path";
+import { fileURLToPath } from "url";
 
 import authRoutes from "./routes/authRoutes.js";
 
-dotenv.config();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: path.join(__dirname, ".env") });
 
 const app = express();
 
@@ -67,7 +70,7 @@ app.use((req, res) => {
    Global Error Handler
 ========================================== */
 
-app.use((err, req, res, next) => {
+app.use((err, req, res, _next) => {
   console.error(err);
 
   res.status(500).json({

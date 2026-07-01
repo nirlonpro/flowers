@@ -1,9 +1,9 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState, useMemo, useCallback, use } from "react";
 import api from "../services/api";
 
 const AuthContext = createContext();
 
-const AUTO_LOGOUT = 1 * 60 * 1000; // 15 Minutes
+const AUTO_LOGOUT = 15 * 60 * 1000; // 15 Minutes
 
 export function AuthProvider({ children }) {
 
@@ -14,7 +14,7 @@ export function AuthProvider({ children }) {
        Check Authentication
     ========================================== */
 
-    const checkAuth = async () => {
+    const checkAuth = useCallback(async () => {
 
         try {
 
@@ -36,19 +36,19 @@ export function AuthProvider({ children }) {
 
         }
 
-    };
+    }, []);
 
     useEffect(() => {
 
         checkAuth();
 
-    }, []);
+    }, [checkAuth]);
 
     /* ==========================================
        Login
     ========================================== */
 
-    const login = async (password) => {
+    const login = useCallback(async (password) => {
 
         const res = await api.post("/auth/login", {
             password,
@@ -58,13 +58,13 @@ export function AuthProvider({ children }) {
 
         return res.data;
 
-    };
+    }, [checkAuth]);
 
     /* ==========================================
        Logout
     ========================================== */
 
-    const logout = async () => {
+    const logout = useCallback(async () => {
 
         try {
 
@@ -78,7 +78,7 @@ export function AuthProvider({ children }) {
 
         setUser(null);
 
-    };
+    }, []);
 
     /* ==========================================
        Auto Logout After 15 Minutes
@@ -105,7 +105,7 @@ export function AuthProvider({ children }) {
         window.addEventListener("mousemove", resetTimer);
         window.addEventListener("keydown", resetTimer);
         window.addEventListener("click", resetTimer);
-        window.addEventListener("scroll", resetTimer);
+        window.addEventListener("scroll", resetTimer, { passive: true });
 
         resetTimer();
 
@@ -120,18 +120,18 @@ export function AuthProvider({ children }) {
 
         };
 
-    }, [user]);
+    }, [user, logout]);
+
+    const contextValue = useMemo(() => ({
+        user,
+        loading,
+        login,
+        logout,
+    }), [user, loading, login, logout]);
 
     return (
 
-        <AuthContext.Provider
-            value={{
-                user,
-                loading,
-                login,
-                logout,
-            }}
-        >
+        <AuthContext.Provider value={contextValue}>
 
             {children}
 
@@ -141,4 +141,4 @@ export function AuthProvider({ children }) {
 
 }
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => use(AuthContext);

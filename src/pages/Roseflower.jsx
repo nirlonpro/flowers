@@ -113,7 +113,11 @@ function drawStem(x0,y0, cx1,cy1, cx2,cy2, x1,y1, prog, thick, col) {
   const steps = 48;
   for (let i = 0; i <= steps*prog; i++) {
     const [px,py] = bezPt(x0,y0,cx1,cy1,cx2,cy2,x1,y1, i/steps);
-    i === 0 ? ctx.moveTo(px,py) : ctx.lineTo(px,py);
+    if (i === 0) {
+      ctx.moveTo(px, py);
+    } else {
+      ctx.lineTo(px, py);
+    }
   }
   ctx.strokeStyle = col;
   ctx.lineWidth   = thick;
@@ -356,6 +360,7 @@ draw();
     return (
         <>
             <button
+                type="button"
                 className="backBtn"
                 onClick={() => navigate("/choose")}
             >
